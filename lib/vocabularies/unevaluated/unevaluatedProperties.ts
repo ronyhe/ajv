@@ -29,7 +29,7 @@ const def: CodeKeywordDefinition = {
     const {gen, schema, data, errsCount, it} = cxt
     /* istanbul ignore if */
     if (!errsCount) throw new Error("ajv implementation error")
-    const {allErrors, props} = it
+    const {allErrors, props, opts} = it
     if (props instanceof Name) {
       gen.if(_`${props} !== true`, () =>
         gen.forIn("key", data, (key: Name) =>
@@ -65,6 +65,10 @@ const def: CodeKeywordDefinition = {
           valid
         )
         if (!allErrors) gen.if(not(valid), () => gen.break())
+      }
+
+      if (opts.removeUnevaluated) {
+        gen.code(_`delete ${data}[${key}]`)
       }
     }
 
