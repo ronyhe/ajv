@@ -10,7 +10,7 @@ describe("removeAdditional option", () => {
       $id: "//test/fooBar",
       type: "object",
       properties: {foo: {type: "string"}, bar: {type: "string"}},
-      unevaluatedProperties: true
+      unevaluatedProperties: true,
     })
 
     const object = {
@@ -25,74 +25,74 @@ describe("removeAdditional option", () => {
     object.should.not.have.property("baz")
   })
 
-  it('should remove redundant properties in oneOf situations', () => {
+  it("should remove redundant properties in oneOf situations", () => {
     const ajv = new _Ajv({removeUnevaluated: true, unevaluated: true})
     ajv.addSchema({
       $id: "//test/fooBar",
       type: "object",
       oneOf: [
         {
-          required: ['a', 'b'],
+          required: ["a", "b"],
           properties: {
-            a: {type: 'number'},
-            b: {type: 'number'},
-          }
+            a: {type: "number"},
+            b: {type: "number"},
+          },
         },
         {
           properties: {
-            c: {type: 'number'},
-            d: {type: 'number'}
-          }
-        }
+            c: {type: "number"},
+            d: {type: "number"},
+          },
+        },
       ],
-      unevaluatedProperties: true
+      unevaluatedProperties: true,
     })
     const object = {
       b: 2,
       c: 3,
-      d: 4
+      d: 4,
     }
     ajv.validate("//test/fooBar", object).should.equal(true)
-    object.should.not.have.property('b')
-    object.should.have.property('c')
-    object.should.have.property('d')
+    object.should.not.have.property("b")
+    object.should.have.property("c")
+    object.should.have.property("d")
   })
 
   // Still failing
-  it.skip('should remove redundant properties in anyOf situations', () => {
+  it.skip("should remove redundant properties in anyOf situations", () => {
     const ajv = new _Ajv({removeUnevaluated: true, unevaluated: true})
     ajv.addSchema({
       $id: "//test/fooBar",
       type: "object",
       anyOf: [
         {
-          required: ['a', 'b'],
+          required: ["a", "b"],
           properties: {
-            a: {type: 'number'},
-            b: {type: 'number'},
+            a: {type: "number"},
+            b: {type: "number"},
             // unevaluatedProperties: true -> This makes it pass
           },
         },
         {
-          required: ['c', 'd'],
+          required: ["c", "d"],
           properties: {
-            c: {type: 'number'},
-            d: {type: 'number'}
-          }
-        }
+            c: {type: "number"},
+            d: {type: "number"},
+          },
+        },
       ],
-      unevaluatedProperties: true
+      unevaluatedProperties: true,
     })
     const object = {
       a: 1,
       b: 2,
       c: 3,
-      d: 4
+      d: 4,
     }
     ajv.validate("//test/fooBar", object).should.equal(true)
-    object.should.have.property('a')
-    object.should.have.property('b')
-    object.should.not.have.property('c')
-    object.should.not.have.property('d')
+    object.should.have.property("a")
+    object.should.have.property("b")
+    object.should.not.have.property("c")
+    object.should.not.have.property("d")
   })
 })
