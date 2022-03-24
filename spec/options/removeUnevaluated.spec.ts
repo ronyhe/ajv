@@ -3,7 +3,7 @@ import chai from "../chai"
 chai.should()
 
 describe("removeAdditional option", () => {
-  it("should remove all additional properties", () => {
+  it("should remove unevaluated properties", () => {
     const ajv = new _Ajv({removeUnevaluated: true, unevaluated: true})
 
     ajv.addSchema({
