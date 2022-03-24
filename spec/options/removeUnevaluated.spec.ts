@@ -57,4 +57,42 @@ describe("removeAdditional option", () => {
     object.should.have.property('c')
     object.should.have.property('d')
   })
+
+  // Still failing
+  it.skip('should remove redundant properties in anyOf situations', () => {
+    const ajv = new _Ajv({removeUnevaluated: true, unevaluated: true})
+    ajv.addSchema({
+      $id: "//test/fooBar",
+      type: "object",
+      anyOf: [
+        {
+          required: ['a', 'b'],
+          properties: {
+            a: {type: 'number'},
+            b: {type: 'number'},
+            // unevaluatedProperties: true -> This makes it pass
+          },
+        },
+        {
+          required: ['c', 'd'],
+          properties: {
+            c: {type: 'number'},
+            d: {type: 'number'}
+          }
+        }
+      ],
+      unevaluatedProperties: true
+    })
+    const object = {
+      a: 1,
+      b: 2,
+      c: 3,
+      d: 4
+    }
+    ajv.validate("//test/fooBar", object).should.equal(true)
+    object.should.have.property('a')
+    object.should.have.property('b')
+    object.should.not.have.property('c')
+    object.should.not.have.property('d')
+  })
 })
