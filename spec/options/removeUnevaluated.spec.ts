@@ -24,4 +24,37 @@ describe("removeAdditional option", () => {
     object.should.have.property("bar")
     object.should.not.have.property("baz")
   })
+
+  it('should remove redundant properties in oneOf situations', () => {
+    const ajv = new _Ajv({removeUnevaluated: true, unevaluated: true})
+    ajv.addSchema({
+      $id: "//test/fooBar",
+      type: "object",
+      oneOf: [
+        {
+          required: ['a', 'b'],
+          properties: {
+            a: {type: 'number'},
+            b: {type: 'number'},
+          }
+        },
+        {
+          properties: {
+            c: {type: 'number'},
+            d: {type: 'number'}
+          }
+        }
+      ],
+      unevaluatedProperties: true
+    })
+    const object = {
+      b: 2,
+      c: 3,
+      d: 4
+    }
+    ajv.validate("//test/fooBar", object).should.equal(true)
+    object.should.not.have.property('b')
+    object.should.have.property('c')
+    object.should.have.property('d')
+  })
 })
